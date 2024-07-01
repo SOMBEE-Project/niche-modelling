@@ -30,7 +30,8 @@ DomProjRast <-   file.path(ProjRastDir,sp.dom) ; if (!dir.exists (DomProjRast)) 
 #######################################################################
 
 # Monthly & Annual Climate raster files : Mercator data : between 93 & 2018
-dates = paste0 (  rep(seq(1993,2018,1), each = 12) ,   "-" ,rep(str_pad(seq(1,12,1),2,side = "left" ,"0"), length(rep(seq(1993,2018,1)))  ))
+##* NEEDS TO BE ADAPTED TO YOUR DATASET
+dates = paste0 (  rep(seq(Yf,Yt,1), each = 12) ,rep(str_pad(seq(1,12,1),2,side = "left" ,"0"), length(rep(seq(Yf,Yt,1)))  ))
 years <- seq(Yf,Yt,1)
 
 # Define bounds of study region (minLong-1°,maxLong+1°) ; (minLat-1°,maxLat+1°) # Add 1° from each extent side
@@ -63,8 +64,15 @@ for ( layer in layers3D ){
 		for (date in dates){
 
 			### 2.1 Open Global 3D Climat data path : T.Month.file  && S.Month.file
-			Tclim <-  Tfiles[str_detect(Tfiles,date)]
-			Sclim <-  Sfiles[str_detect(Sfiles,date)]
+		  
+		  # MAEL GERNEZ change, same as in Script 03, from date="Year-Month" to mg="Year_Month" because in Env_data/Copernicus_data/ date express in _, so:
+		  ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+      mg <- paste0(substr(date, 1, 4), substr(date, 5, 7))
+		  
+			Tclim <-  Tfiles[str_detect(Tfiles, mg)] # date
+			Sclim <-  Sfiles[str_detect(Sfiles, mg)] # date
+			
+			rm(mg)
 
 			### 2.2 Crop Global 3D climat files with local domain extent  (path : "RESULTS/ProjRasters/domain")
 	
@@ -72,12 +80,16 @@ for ( layer in layers3D ){
 			Soutput = file.path(DomProjRastZall,paste0("Mercator_Salinity_",sp.dom,"_",date,".nc" ) )  
 
 		    	if ( !file.exists(Toutput) | !file.exists(Soutput) ){
-
-				### 2.2.1 Crop 3D Temperature raster with local domain extent
-				nc_subset(filename=Tclim, compression=9,output= Toutput ,latitude=xlat, longitude=xlon,ignore.case = TRUE)
+		  
+				### 2.2.1 Crop 3D Temperature raster with local domain extent # MARINE BENEAT ########
+        ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+				nc_subset(filename=Tclim, varid="thetao", compression=9,output= Toutput ,latitude=xlat, longitude=xlon,ignore.case = TRUE) # if Glorys files with various climatic variables at a time  
+        # if Glorys files with only 1 climatic variable at a time : nc_subset(filename=Tclim, compression=9,output= Toutput ,latitude=xlat, longitude=xlon,ignore.case = TRUE)
 				### 2.2.2 Crop 3D Salinity raster with local domain extent
-				nc_subset(filename=Sclim, compression=9,output= Soutput ,latitude=xlat, longitude=xlon,ignore.case = TRUE)
-
+        ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+				nc_subset(filename=Sclim, varid="so", compression=9,output= Soutput ,latitude=xlat, longitude=xlon,ignore.case = TRUE) # if Glorys files with various climatic variables at a time  
+        # if Glorys files with only 1 climatic variable at a time : nc_subset(filename=Sclim, compression=9,output= Soutput ,latitude=xlat, longitude=xlon,ignore.case = TRUE)
+          
 		    	 }# cropped files exists
 
 	
@@ -148,8 +160,9 @@ for ( layer in layers3D ){
 		if ( !file.exists(Toutput) | !file.exists(Soutput) ){
 
 			cat("\t" ,year ," : ")
-
-		  	year.files <- dir(DomProjRastLayer,pattern = paste0(year,"-") )
+        
+        ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+		  	year.files <- dir(DomProjRastLayer,pattern = paste0("_", year) )
 	  
 			# Mean of Monthly Temperature files for year y
 			Tyear.files <- grep(year.files,pattern="Temperature",value=T)

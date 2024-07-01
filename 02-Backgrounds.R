@@ -62,7 +62,8 @@ if ( file.exists(BCoutput) && file.exists(BBoutput) ) {
 
 # Monthly files for Mercator data : between 93 & 2018
 
-dates = paste0 (  rep(seq(1993,2018,1), each = 12) ,   "-" ,rep(str_pad(seq(1,12,1),2,side = "left" ,"0"), length(rep(seq(1993,2018,1)))  ))
+##* NEEDS TO BE ADAPTED TO YOUR DATASET
+dates = paste0 (  rep(seq(Yf,Yt,1), each = 12) ,rep(str_pad(seq(1,12,1),2,side = "left" ,"0"), length(rep(seq(Yf,Yt,1)))  )) # 1993,2020
 
 
 for (date in dates) {    
@@ -71,11 +72,15 @@ for (date in dates) {
   
   ### 1 Load Global 3D Clim data path : T.Month.file  && S.Month.file
   Tclim <-  Tfiles[str_detect(Tfiles,date)]
-  rTemp <- brick(Tclim,lvar=4)
+  ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+  rTemp <- brick(Tclim,varname="thetao")  #if using full Glorys files with layers of climatic variables 
+  # if using Glorys files with only 1 climatic variable at a time : brick(Tclim,lvar=4)
   Toutput = file.path(BackRast,paste0( "meanTemp_",date,".RData" ) )    
 
   Sclim <-  Sfiles[str_detect(Sfiles,date)]
-  rSal <-   brick(Sclim,lvar=4)
+  ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+  rSal <-   brick(Sclim,varname="so") #if using full Glorys files with layers of climatic variables 
+  # if using Glorys files with only 1 climatic variable at a time : brick(Sclim,lvar=4)
   Soutput = file.path(BackRast,paste0( "meanSal_",date,".RData" ) )  
 
 
@@ -192,18 +197,28 @@ for (file in files){
 count_back_all <- apply(back_all,1,sum,na.rm=TRUE)
 count_back_all[ which(count_back_all == 0 )] <- NA
 Sp_back_count.r <- raster (resolution=c(0.1,0.1), xmn = T_min_glob, xmx = T_max_glob,ymn = S_min_glob, ymx = S_max_glob)
-values(Sp_back_count.r) <- count_back_all
 
+################################################################################
+# MAEL GERNEZ # Error because count_back_all have more value than Sp_back_count.r, so propose to rm NA and add just rigth number of NA ?? 
+# values(Sp_back_count.r) <- count_back_all
+# save(count_back_all,file= BCoutput)
+
+count_back_all <- subset(count_back_all, !is.na(count_back_all))
+count_back_all <- c(count_back_all, rep(NA, (ncell(Sp_back_count.r)-length(count_back_all))))
+values(Sp_back_count.r) <-count_back_all
 save(count_back_all,file= BCoutput)
-rm("count_back_all")
 
-count_back_bin <- ifelse(count_back_all > 0 , 1, NA )
+# count_back_bin <- ifelse(count_back_all > 0 , 1, NA )
+# Sp_back.r <- raster (resolution=c(0.1,0.1), xmn = T_min_glob, xmx = T_max_glob,ymn = S_min_glob, ymx = S_max_glob)  
+# values(Sp_back.r) <- count_back_bin
+# save(count_back_bin,file= BBoutput)
+# rm("count_back_bin")
+
+count_back_all <- ifelse(count_back_all > 0 , 1, NA )
 Sp_back.r <- raster (resolution=c(0.1,0.1), xmn = T_min_glob, xmx = T_max_glob,ymn = S_min_glob, ymx = S_max_glob)  
-values(Sp_back.r) <- count_back_bin
-
-save(count_back_bin,file= BBoutput)
-rm("count_back_bin")
-
+values(Sp_back.r) <- count_back_all
+save(count_back_all,file= BBoutput)
+################################################################################
 
 cat("-----> ","\t",c("BACKGROUND & Global rasters DONE" ,"\n") )
 

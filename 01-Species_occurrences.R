@@ -18,10 +18,12 @@
 #  Outputs directories #
 ########################
 
+
 ### We create Outputs directories for Species raw occurrences
 Sp_occ_Dir_Raw <- file.path(Maindir,"RESULTS/SpeciesOccurrences/raw/") ; if(!dir.exists(Sp_occ_Dir_Raw)){dir.create(Sp_occ_Dir_Raw,recursive = TRUE)}
 # & processed occurrences 
 Sp_occ_Dir <- file.path(Maindir,"RESULTS/SpeciesOccurrences")
+
 
 
 ### Load the processed occurrences file if it already exists
@@ -48,6 +50,7 @@ if( file.exists(  paste0(Sp_occ_Dir_Raw,"occ_",SP_name,".RData") ) ) {
 	cat("-----> ","\t",c("OCCURRENCES already downloded" ,"\n") )
 
 }else{
+
 
 	SpeciesOCC <- NULL
 
@@ -105,7 +108,6 @@ if( file.exists(  paste0(Sp_occ_Dir_Raw,"occ_",SP_name,".RData") ) ) {
 } # raw data
   
 
-
 ###################################### 
 #      	PROCESSING DATA 	     #
 ######################################
@@ -147,7 +149,7 @@ if( file.exists(  paste0(Sp_occ_Dir_Raw,"occ_",SP_name,".RData") ) ) {
 
 	SpeciesOCC <- SpeciesOCC[ !is.na(SpeciesOCC$year),]		# remove NAs
 
-	SpeciesOCC <- SpeciesOCC[ between( SpeciesOCC$year ,  1993,2018), ]     # keep only records between 1993 & 2018 (Mercator periods)
+	SpeciesOCC <- SpeciesOCC[ between( SpeciesOCC$year ,  Yf, Yt), ]     # keep only records between 1993 & 2018 (Mercator periods)
 
     
 	# 4.3 Clean months    
@@ -180,3 +182,10 @@ if( file.exists(  paste0(Sp_occ_Dir_Raw,"occ_",SP_name,".RData") ) ) {
 	}
 
 }#eo else
+  
+
+
+
+
+
+
