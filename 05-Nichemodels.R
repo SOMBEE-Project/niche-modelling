@@ -146,7 +146,7 @@ if ( file.exists(BiomodClibationFile) && dir.exists(spnichfiles) ){
                                            silent          = TRUE); gc()
 
 	Biomod_current_global <- Biomod_current_global@proj@val
-
+	
 	### 4 Validate models
 
 	# 4.1 Create empty object to save validation results
@@ -157,22 +157,22 @@ if ( file.exists(BiomodClibationFile) && dir.exists(spnichfiles) ){
 	eval <- cbind(eval[, -4], Species = rep(SP_name, nrow(eval))) 
 	Validation <- rbind(Validation, eval)
 
-
 	# 4.3 k-fold cross validation using Boyce index
 	names.Biomod_current_global <- sapply(Biomod_cal@models.computed,function(o){  paste ( unlist( str_split(o,"_") )[3] ,unlist( str_split(o,"_") )[4],sep="_")  })
-
+	
 	for (j in models){
 		  for (kfold in 1 : k){
-		    idModel <- grep(names.Biomod_current_global, pattern = paste("RUN", kfold,"_", j, sep="")) 
+		    idModel <- grep(names.Biomod_current_global, pattern = paste("RUN", kfold,"_", j, sep=""))
+		 if(length(idModel)>0){ 
 		    val.data <- PA[DataSplitTable[, kfold] == FALSE, c("Temperature", "Salinity", "resp")]
 		    val.data <- val.data[val.data$resp == 1, -3]
-    
+
 		    val.data <- BIOMOD_Projection(modeling.output = Biomod_cal, # Biomod projection on the climatic map
                                   new.env         = val.data, 
                                   selected.models = Biomod_cal@models.computed[idModel], 
                                   proj.name       = paste(Biomod_cal@models.computed[idModel], "_Current_Global", sep = ""),
                                   silent          = TRUE) ;gc()
-    
+		    
 		    CBI <- ecospat.boyce (fit      = na.omit(Biomod_current_global[,j,paste0("RUN",kfold),]/1000), 
                           obs      = val.data@proj@val[, 1, 1, 1]/1000, 
                           nclass   = 0, 
@@ -182,12 +182,13 @@ if ( file.exists(BiomodClibationFile) && dir.exists(spnichfiles) ){
 		    Validation <- rbind( Validation, 
                          data.frame(Model.name   = paste("RUN", kfold, "_", j, sep = ""),  
                                     Eval.metric  = "CBI",  
-                                    Testing.data = CBI$Spearman.cor, 
+                                    Testing.data = CBI$Spearman.cor, # MAEL GERNEZ rather suggests using :  CBI$cor
                                     Cutoff       = NA, 
                                     Sensitivity  = NA,
                                     Specificity  = NA,  
                                     Species      =  SP_name)) ; gc()
-		  }#eo kfold
+			}
+	  }#eo kfold
 	}#eo j in models
 
 	
@@ -207,7 +208,7 @@ if ( file.exists(BiomodClibationFile) && dir.exists(spnichfiles) ){
 	bem.tmp <- Validation[which(Validation$Species ==SP_name), ] 
 	tmp.cbi <-  bem.tmp[which(bem.tmp$Eval.metric == "CBI"), ]
 	Mean.tmpcbi <- aggregate(tmp.cbi[, 2], list(tmp.cbi$Algorithm), mean)
-
+	
 
 	# if at least one good model else stop
 	if (  length( which(Mean.tmpcbi$x > 0.5) ) > 0 ) { 

@@ -46,7 +46,8 @@ BiomodClibationFile = file.path(Niche_SpDir,"Biomod_cal.RData") # Biomod Calibra
 SPlayers3D = as.character(unique(cut(min_depth:max_depth,breaks= c(0,25,50,100,150,200,300,500,1000,max(Obs.depths)),include.lowest = T)))
  
 ###### monthly from 01-Yf to 12-Yt
-dates = paste0 (  rep(seq(Yf,Yt,1), each = 12) ,   "-" ,rep(str_pad(seq(1,12,1),2,side = "left" ,"0"), length(rep(seq(Yf,Yt,1)))  ))
+##* NEEDS TO BE ADAPTED TO YOUR DATASET
+dates = paste0 (  rep(seq(Yf,Yt,1), each = 12) ,rep(str_pad(seq(1,12,1),2,side = "left" ,"0"), length(rep(seq(Yf,Yt,1)))  )) ## MAEL GERNEZ, change "-" to "_", because in RESULTS\ProjectionRasters\BoB\0-25, date are in "Year_Month" but only after 2019 ??
 
 ###### annual from Yf to Yt
 years <- seq(Yf,Yt,1)
@@ -80,11 +81,11 @@ years <- seq(Yf,Yt,1)
 
 				### 2.1 Open Global 3D Climat data path : T.Month.file  && S.Month.file
 				Tfile <-  grep(dir(DomProjRastLayer),pattern=date,value=T) ; Tfile <-  grep(Tfile,pattern="Temperature",value=T)
-				rTemp <- get(load( file.path(DomProjRastLayer,Tfile) ))
+				rTemp <- get(load( file.path(DomProjRastLayer,Tfile)[1] )) # MAEL GERNEZ
 				TemperatureL <-  rasterFromXYZ(rTemp)
 
 				Sfile <-  grep(dir(DomProjRastLayer),pattern=date,value=T); Sfile <-  grep(Sfile,pattern="Salinity",value=T)
-				rSal <- get(load(file.path(DomProjRastLayer,Sfile))) 
+				rSal <- get(load(file.path(DomProjRastLayer,Sfile)[1])) # MAEL GERNEZ
 				SalinityL <-  rasterFromXYZ(rSal) 
 
 
@@ -151,11 +152,11 @@ years <- seq(Yf,Yt,1)
 
 			### 3.1 Open Temperature/Salinity climate rasters for year / study area / depth layer
 			Tfile <-  grep(dir(DomProjRastLayer),pattern=paste0(year,"_"),value=T) ; Tfile <-  grep(Tfile,pattern="Temperature",value=T)
-			rTemp <- get(load( file.path(DomProjRastLayer,Tfile) ))
+			rTemp <- get(load( file.path(DomProjRastLayer,Tfile)[1] )) ## Maël, for me there are an erreur here, its not all file of the year but the file of the year so from : rTemp <- get(load( file.path(DomProjRastLayer,Tfile) )) ; to rTemp <- get(load( file.path(DomProjRastLayer,Tfile)[1] ))
 			TemperatureL <-  rasterFromXYZ(rTemp) # TemperatureL <- resample(TemperatureL, osmose.grid)
 
 			Sfile <-  grep(dir(DomProjRastLayer),pattern=paste0(year,"_"),value=T) ; Sfile <-  grep(Sfile,pattern="Salinity",value=T)
-			rSal <- get(load(file.path(DomProjRastLayer,Sfile))) 
+			rSal <- get(load(file.path(DomProjRastLayer,Sfile)[1] )) ## Maël, for me there are an erreur here, its not all file of the year but the file of the year so from : rTemp <- get(load( file.path(DomProjRastLayer,Tfile) )) ; to rTemp <- get(load( file.path(DomProjRastLayer,Tfile)[1] ))
 			SalinityL <-  rasterFromXYZ(rSal) 
 
 		

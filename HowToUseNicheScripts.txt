@@ -1,0 +1,50 @@
+##################################################################################
+Here are some advices on how to use the Niche scripts built by Sabrine in 2019. 
+Marine Beneat 
+Mael Gernez
+##################################################################################
+
+
+
+1- Build a ALLSpecies_List.csv file refering the species you are building the niches for
+
+
+The .csv file should refeer the folowing columns : 
+SPECIES | DOMAIN | DEPTH_ZONE | MIN_DEPTH | MAX_DEPTH |
+
+Species : scientific name
+Domain : the "sea" you are going to focus on for this species (ex: for Gulf of Lion, put GL)
+Depth_zone : vertical habitat area of the fish : you should define how to classify this depth_zone criteria. 
+depth : in meters
+
+
+2- Make sure your working environment is clean
+
+Upload the scripts in a SCRIPTS folder.
+Create a RESULTS folder, in which you need to add the T_globlimits.RData and S_globlimits.RData files in RESULTS/Backgrounds (available on github).
+
+
+3- In the LAUNCH_SDM script : correct the spcificities according to your working area
+
+Verify that the changes you make are well applied in all the scripts. 
+Examples : 
+- "layers3D" is predefined but can be modified to cut the vertical layers of the ocean in different layers. This parameter can be found in LAUNCH_SDM and script n°6 (SPlayers3D).
+- Paths definitions : specified in the code : ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+- "DOMextents" : should indicate the latitude and longitude boundaries of your study area, with the name of your area (ex: DOMextents$GL for Gulf of Lion)
+- Adjust "Yf" and "Yt" values according to the dates of the Glorys files.
+
+
++ Additional information
+
+If you are working on datarmor : 
+1- Make sure the GLORYS files on  "/home/datawork-marbec-pmod/Sabrine/Mercator/new-values" are up-to-date, and that you have access to them.
+2- You'll need to specify you are using the conda environment built by Sabrine for the occasion.
+   You can add the following code lines in your .pbs script :
+	. /appli/anaconda/latest/etc/profile.d/conda.sh
+	conda activate r-sabrine
+	which R
+
+If you are working on your own computer : 
+1- Download the GLORYS files needed for the temperature and salinity definition of the species climatic niche. Protocole given on Glorys website.
+2- Load the packages needed according to the script n°0.
+

@@ -1,0 +1,67 @@
+__________________________________________________________
+
+March - June 2024 
+marine beneat
+Run Sabrine scripts to retrieve 101 climatic niches of species from the mediterranean sea
+__________________________________________________________
+
+
+3 errors categories encountered : 
+
+
+_______1 - Species Occurences_________
+
+=> Occurences targeted : 50
+Error warning: Occurences finished. Does not run the following steps of the scripts. 
+
+Species with this error in Mediterranean dataset : 
+31 Gobius ophiocephalus
+4 Argyrosomus regius (44 occ <50) 
+13 Chelon saliens (2 occ <50) OR Liza saliens (20 occ <50) 
+18 Dentex gibbosus (38 occ <50) 
+48 Rhinobatos rhinobatos (44 occ <50)
+
+3 methods to correct this issue : 
+- Has the species another name in the datasets I use ? (For Chelon saliens for instance)
+- Enlarge the time-period to retrive the occurences data (I did add 2019-2020)
+- Lower the occurence threshold in the scripts (I set the Occurences targeted to 20)
+
+
+_______2 - Biomod projection_________ 
+
+Error warning: 
+"Error in if (selected.models[1] == "all") { : missing value where TRUE/FALSE needed
+Calls: source ... eval -> BIOMOD_Projection -> .BIOMOD_Projection.check.args"
+
+Species with this error in Mediterranean dataset : 
+11 Chelon auratus 
+12 Chelon ramada 
+19 Dentex maroccanus
+32 Halobatrachus didactylus
+46 Pomatoschistus marmoratus
+97 Parapenaeus longirostris
+
+==> This has been corrected in the scripts
+Added the following condition in script 05-Nichemodels.R in the for loop line 172 : if(length(idModel)>0){
+Restricting the for loop on the models with an output. 
+
+
+_______3 - Niche _________
+
+Error warning:
+"REDO NICHE (tmpdir not found)"
+
+Species with this error in Mediterranean dataset : 
+33 Lepidorhombus whiffiagonis  
+49 Sarda sarda               
+66 Trachurus picturatus              
+67 Trachyrincus scabrus          
+68 Trigla lyra      
+78 Micromesistius poutasso                     
+85 Lophius budegassa     
+91 Aristeus.antennatus     
+
+Observation : No binary presences estimated by the niche models. 
+To bypass this problem, in script 05-Nichemodels for loop line 239 : 
+I replaced the cutoff theshold to estimate the binary map by 0. 
+

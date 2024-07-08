@@ -5,32 +5,57 @@
 
 ###
 
+library(stringr)  
+
 library(parallel)
 library(taxize)
 library(ncdf4)
+
+library(plyr)
+
 library(dplyr)
 library(RColorBrewer)
 library(rvertnet)
 library(spocc)
 library(robis)
 library(sp)
+
+#devtools::install_github("cran/rgdal", dependencies = TRUE)
 library(rgdal)
+
+#devtools::install_github("cran/maptools", dependencies = TRUE)
 library(maptools)
+
 library(raster)
 library(gridExtra)
+
+#### Not good : devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
+# Good : install.packages("https://cran.r-project.org/src/contrib/Archive/biomod2/biomod2_3.5.1.tar.gz", repo=NULL, type="source")
+# If this file doesn't work, a have this package in DATA/package.tar
 library(biomod2) # If you are not using a Docker container please install the Github version of the package 
+
 library(PresenceAbsence)
+
+#devtools::install_github("cran/rgeos", dependencies = TRUE)
 library(rgeos)
-library(plyr)
+
+
+
 library(ecospat)
 library(ade4)
 library(viridis)
-library(stringr)
-library(nctools)
+
 library(mapdata)
 library(lubridate)
 library(readr)
-library(kali)
+
+### ADD MAEL
+# For nc_subset()
+#devtools::install_github("roliveros-ramos/nctools", dependencies = TRUE)
+library(nctools)
+
+#library(kali) # not for this R version
+
 library(fields)
 library(units)
 library(R.utils)
@@ -39,6 +64,9 @@ library(foreach)
 library(doSNOW)
 library (snow)
 library (doParallel)
+
+
+print(sessionInfo())
 
 #############
 # FUNCTIONS #

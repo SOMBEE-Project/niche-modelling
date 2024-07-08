@@ -39,6 +39,7 @@ if ( file.exists( file.path(Matchup_Dir,paste0("Occ_Clim_",SP_name,".RData") ) )
 	sp_occ_Clim <- NULL
   
 	compteur <- 0
+
  
 	for (j in samedate){
     
@@ -49,12 +50,17 @@ if ( file.exists( file.path(Matchup_Dir,paste0("Occ_Clim_",SP_name,".RData") ) )
 
 
 	    # 2 Climat data for date j : T.Month.file  && S.Month.file
+	    
+	    # MAEL GERNEZ change, from j="Year-Month" to mg="Year_Month" because in Backgrounds/rasters/9_24/ date express in _, so:
+	    ##* NEEDS TO BE ADAPTED TO YOUR DATASET
+      mg <- paste0(substr(j, 1, 4), substr(j, 6, 7))
 
-	    Tclim <- file.path (BackRast, grep(dir(BackRast),pattern=paste0("Temp_",j),value=T) )
-	    rTemp <-  RasterClim ; values(rTemp) <- get(load(Tclim))
+	    Tclim <- file.path (BackRast, grep(dir(BackRast),pattern=paste0("Temp_",mg),value=T) ) 
+      rTemp <-  RasterClim ; values(rTemp) <- get(load(Tclim))
         
-	    Sclim <-   file.path (BackRast, grep(dir(BackRast),pattern=paste0("Sal_",j),value=T) )
-	    rSal <-    RasterClim ; values(rSal) <- get(load(Sclim))
+	    Sclim <-   file.path (BackRast, grep(dir(BackRast),pattern=paste0("Sal_",mg),value=T) )
+	    
+	    rm(mg)
     
 	    # 3 Extract Temp & salinity values for the occ subset : matchup climat/occ
 	    sub.occ$longitude <- as.numeric(sub.occ$longitude ) ; sub.occ$latitude <- as.numeric(sub.occ$latitude )
